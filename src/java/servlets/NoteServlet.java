@@ -44,6 +44,7 @@ public class NoteServlet extends HttpServlet {
             int index = Integer.parseInt(count);
             try {
                 Notes notes = ns.get(index);
+                request.setAttribute("currentValue", index);
                 request.setAttribute("selectedTitle", notes.getTitle());
                 request.setAttribute("selectedContents", notes.getContents());
             } catch (Exception ex) {
@@ -74,18 +75,22 @@ public class NoteServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String action = request.getParameter("action");
-        String selectedTitle = request.getParameter("selectedTitle");
-        String selectedContent = request.getParameter("selectedContent");
+        String selectedTitle = request.getParameter("titleJSP");
+        String selectedContent = request.getParameter("contentJSP");
+        String count = request.getParameter("tracker");
 
         NoteService ns = new NoteService();
         Date date = new Date();
 
+        System.out.println(selectedTitle);
+        System.out.println(selectedContent);
+
         try {
+            int index = Integer.parseInt(count);
             if (action.equals("delete")) {
-                String selectedUsername = request.getParameter("selectedUsername");
-                ns.delete(1);
+                ns.delete(index);
             } else if (action.equals("save")) {
-                ns.update(date, selectedTitle, selectedContent, 1);
+                ns.update(date, selectedTitle, selectedContent, index);
             }
         } catch (Exception ex) {
             request.setAttribute("errorMessage", "Whoops.  Could not perform that action.");
