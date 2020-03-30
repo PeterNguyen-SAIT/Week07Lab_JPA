@@ -6,11 +6,15 @@
 package servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import models.Notes;
+import services.NoteService;
 
 /**
  *
@@ -31,6 +35,26 @@ public class NoteServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        NoteService ns = new NoteService();
+        String action = request.getParameter("action");
+        if (action != null && action.equals("view")) {
+            String selectedUsername = request.getParameter("selectedUsername");
+            try {
+                Notes note = ns.get(selectedUsername);
+                request.setAttribute("selectedNote", note);
+            } catch (Exception ex) {
+                Logger.getLogger(NoteServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        List<Notes> notes = null;        
+        try {
+            notes = ns.getAll(); 
+        } catch (Exception ex) {
+            Logger.getLogger(NoteServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        request.setAttribute("notes", notes);
+        getServletContext().getRequestDispatcher("/WEB-INF/notes.jsp").forward(request, response);
     }
 
     /**
