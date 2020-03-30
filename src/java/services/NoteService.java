@@ -21,24 +21,24 @@ public class NoteService {
         notesDB = new NotesDB();
     }
 
-    public Notes get(String title) throws Exception {
-        return notesDB.getTitle(title);
+    public Notes get(int noteid) throws Exception {
+        return notesDB.getNote(noteid);
     }
 
     public List<Notes> getAll() throws Exception {
         return notesDB.getAll();
     }
 
-    public int update(Date datecreated, String title, String contents) throws Exception {
-        Notes notes = get(title);
+    public int update(Date datecreated, String title, String contents, int noteid) throws Exception {
+        Notes notes = get(noteid);
         notes.setDatecreated(datecreated);
         notes.setTitle(title);
         notes.setContents(contents);
         return notesDB.update(notes);
     }
 
-    public int delete(String title) throws Exception {
-        Notes deletedNote = notesDB.getTitle(title);
+    public int delete(int noteid) throws Exception {
+        Notes deletedNote = notesDB.getNote(noteid);
         return notesDB.delete(deletedNote);
     }
 

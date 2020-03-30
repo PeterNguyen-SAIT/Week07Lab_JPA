@@ -6,6 +6,8 @@
 package servlets;
 
 import java.io.IOException;
+import static java.time.OffsetTime.now;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,7 +24,6 @@ import services.NoteService;
  */
 public class NoteServlet extends HttpServlet {
 
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -36,20 +37,23 @@ public class NoteServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         NoteService ns = new NoteService();
+
         String action = request.getParameter("action");
-        if (action != null && action.equals("view")) {
-            String selectedUsername = request.getParameter("selectedUsername");
+        if (action != null && action.equals("edit")) {
+            String count = request.getParameter("selectedEdit");
+            int index = Integer.parseInt(count);
             try {
-                Notes note = ns.get(selectedUsername);
-                request.setAttribute("selectedNote", note);
+                Notes notes = ns.get(index);
+                request.setAttribute("selectedTitle", notes.getTitle());
+                request.setAttribute("selectedContents", notes.getContents());
             } catch (Exception ex) {
                 Logger.getLogger(NoteServlet.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
-        List<Notes> notes = null;        
+
+        List<Notes> notes = null;
         try {
-            notes = ns.getAll(); 
+            notes = ns.getAll();
         } catch (Exception ex) {
             Logger.getLogger(NoteServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -68,6 +72,34 @@ public class NoteServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        String action = request.getParameter("action");
+        String selectedTitle = request.getParameter("selectedTitle");
+        String selectedContent = request.getParameter("selectedContent");
+
+        NoteService ns = new NoteService();
+        Date date = new Date();
+
+        try {
+            if (action.equals("delete")) {
+                String selectedUsername = request.getParameter("selectedUsername");
+                ns.delete(1);
+            } else if (action.equals("save")) {
+                ns.update(date, selectedTitle, selectedContent, 1);
+            }
+        } catch (Exception ex) {
+            request.setAttribute("errorMessage", "Whoops.  Could not perform that action.");
+        }
+
+        List<Notes> notes = null;
+        try {
+            notes = ns.getAll();
+        } catch (Exception ex) {
+            Logger.getLogger(NoteServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        request.setAttribute("notes", notes);
+        getServletContext().getRequestDispatcher("/WEB-INF/notes.jsp").forward(request, response);
     }
 
     /**

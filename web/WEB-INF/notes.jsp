@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -13,34 +14,35 @@
     </head>
     <body>
         <h1>Notes!</h1>
-        <table class="tg">
+        <table>
             <tr>
-                <th class="tg-0pky">Date Created</th>
-                <th class="tg-0lax">Title</th>
-                <th class="tg-0lax"></th>
+                <th>Date Created</th>
+                <th>Title</th>
+                <th></th>
             </tr>
-            <c:forEach var="User" items="${NoteList}" varStatus="status">
+            <c:forEach var="note" items="${notes}" varStatus="status">
                 <tr>
-                    <td class="tg-0lax">${Note.datecreated}</td>
-                    <td class="tg-0lax">${Note.title}</td>
-                <form action="" method="post">
-                    <input type="hidden" name="userName" value="${Note.title}"/>
+                    <td>${note.datecreated}&nbsp;</td>
+                    <td>${note.title}&nbsp;</td>
+                <form action="" method="get">
+                    <td><input type="hidden" name="userName" value="${note.title}"/>
                     <input type="hidden" name="action" value="edit" />
+                    <input type="hidden" name="selectedEdit" value="${status.count}">
                     <input type="submit" value="Edit"/></td>
                 </form>
                 </tr>
             </c:forEach>  
         </table>
         <h2>Edit Note</h2>
-        <form>
+        <form action="" method="post">
             <input type="hidden" name="action" value="delete">
-            <input type="submit" value="delete">
+            <input type="submit" value="Delete Note">
         </form><br>
-        <input type="text" value="${Title}"><br>
-        <form>
-            <textarea rows="10" cols="50">${Contents}</textarea>
+        <input type="text" value="${selectedTitle}"><br>
+        <form action="" method="post">
+            <textarea rows="10" cols="50">${selectedContents}</textarea>
             <input type="hidden" name="action" value="save">
-            <input type="submit" value="save">
+            <input type="submit" value="Save">
         </form>
     </body>
 </html>

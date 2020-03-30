@@ -62,10 +62,10 @@ public class NotesDB {
         }
     }
 
-    public Notes getTitle(String title) throws NotesDBException {
+    public Notes getNote(int noteid) throws NotesDBException {
         EntityManager em = DBUtil.getEmFactory().createEntityManager();
         try {
-            Notes notes = em.find(Notes.class, title);
+            Notes notes = em.find(Notes.class, noteid);
             return notes;
         } finally {
             em.close();

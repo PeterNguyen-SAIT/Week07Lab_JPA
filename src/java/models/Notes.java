@@ -53,6 +53,7 @@ public class Notes implements Serializable {
     private String contents;
 
     public Notes() {
+        this.title = null;
     }
 
     public Notes(Integer noteid) {
